@@ -29,6 +29,7 @@
                </archive>
             </configuration>
          </plugin>
+
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -66,6 +67,33 @@
                         <argument>${project.build.finalName}:java8</argument>
                         <argument>.</argument>
                      </arguments>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.4.1</version>
+            <executions>
+               <execution>
+                  <phase>validate</phase>
+                  <id>enforce-java</id>
+                  <goals>
+                     <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                     <rules>
+                        <requireJavaVersion>
+                           <version>[1.8.0, 1.8.1]</version>
+                           <message>Java version: ${java.runtime.version}. This branch is for Java 8 only, checkout main branch to build with Java 11+, or use java 8</message>
+                        </requireJavaVersion>
+                        <requireMavenVersion>
+                           <version>3.6</version>
+                           <message>Upgrade maven to 3.6+ or use mvnw</message>
+                        </requireMavenVersion>
+                     </rules>
                   </configuration>
                </execution>
             </executions>
