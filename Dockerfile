@@ -1,4 +1,5 @@
-FROM amazoncorretto:17
+ARG java_version
+FROM amazoncorretto:${java_version}
 
 ENV JAVA_NMT_OPTS="-Xint -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary"
 ENV JAVA_OPTS=""

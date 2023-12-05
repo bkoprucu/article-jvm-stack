@@ -9,8 +9,9 @@
    <version>1.0-SNAPSHOT</version>
 
    <properties>
-      <maven.compiler.target>17</maven.compiler.target>
-      <maven.compiler.source>17</maven.compiler.source>
+      <jvm_version>${java.specification.version}</jvm_version>
+      <maven.compiler.source>${jvm_version}</maven.compiler.source>
+      <maven.compiler.target>${jvm_version}</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
 
@@ -29,6 +30,7 @@
                </archive>
             </configuration>
          </plugin>
+
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -47,7 +49,7 @@
                         <argument>image</argument>
                         <argument>rm</argument>
                         <argument>-f</argument>
-                        <argument>${project.build.finalName}</argument>
+                        <argument>${project.build.finalName}:java${maven.compiler.target}</argument>
                      </arguments>
                   </configuration>
                </execution>
@@ -62,10 +64,39 @@
                      <workingDirectory>${project.basedir}</workingDirectory>
                      <arguments>
                         <argument>build</argument>
+                        <argument>--build-arg</argument>
+                        <argument>java_version=${maven.compiler.target}</argument>
                         <argument>-t</argument>
-                        <argument>${project.build.finalName}</argument>
+                        <argument>${project.build.finalName}:java${maven.compiler.target}</argument>
                         <argument>.</argument>
                      </arguments>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <version>3.4.1</version>
+            <executions>
+               <execution>
+                  <phase>validate</phase>
+                  <id>enforce-java</id>
+                  <goals>
+                     <goal>enforce</goal>
+                  </goals>
+                  <configuration>
+                     <rules>
+                        <requireJavaVersion>
+                           <version>11</version>
+                           <message>Java version: ${java.runtime.version}. This branch is for Java 11+ only, checkout branch java8 to build with Java 8</message>
+                        </requireJavaVersion>
+                        <requireMavenVersion>
+                           <version>3.6</version>
+                           <message>Upgrade maven to 3.6+ or use mvnw</message>
+                        </requireMavenVersion>
+                     </rules>
                   </configuration>
                </execution>
             </executions>
