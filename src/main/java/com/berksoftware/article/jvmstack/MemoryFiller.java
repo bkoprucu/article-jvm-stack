@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 
 /**
  * Allocates stack and heap memory by given parameters for observing JVM behavior under different configurations
+ *
+ *
  */
 public class MemoryFiller {
 
@@ -22,19 +24,25 @@ public class MemoryFiller {
     public void spawnThreads(int threadCount, int heapPerThread, int frameCount) {
         System.out.println("\nSpawning " + threadCount + " threads, each consuming ~" + heapPerThread + " KB heap, "
                                    + frameCount + " stack frames\n");
-
         IntStream.rangeClosed(1, threadCount).forEachOrdered(threadNr -> new Thread(() -> {
             // Allocate heap memory
-             byte[] heapArr = new byte[heapPerThread * 1024];
-             // Allocate stack memory
-             fillStack(frameCount);
-             System.out.print("\r" + threadNr + " threads created");
-             // Block thread for measuring
-             try {
-                 countDownLatch.await();
-             } catch (InterruptedException e) {
-                 throw new RuntimeException(e);
-             }
+            byte[] heapArr = new byte[heapPerThread * 1024];
+
+            try {
+                // Allocate stack memory
+                fillStack(frameCount);
+            } catch (StackOverflowError e) {
+                // Stop on error, avoid endless log
+                System.err.println(e);
+                System.exit(1);
+            }
+            System.out.print("\r" + threadNr + " threads created");
+            // Block thread for measuring
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }).start());
 
         System.out.println("\nPID: " + ManagementFactory.getRuntimeMXBean().getPid());
@@ -43,8 +51,6 @@ public class MemoryFiller {
 
     /**
      * Fills stack by recursively calling itself
-     *
-     * @param frameCount How many frames to add to stack memory
      */
     private void fillStack(int frameCount) {
         // Unused primitives defined to consume stack on each frame,
@@ -58,7 +64,7 @@ public class MemoryFiller {
 
 
     public static void main(String[] args) {
-        if(args.length != 3) {
+        if (args.length != 3) {
             System.err.println("Usage: memoryfiller thread_count heap_per_thread stack_frame_per_thread");
             System.exit(1);
         }
