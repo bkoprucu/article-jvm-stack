@@ -1,6 +1,11 @@
 package com.berksoftware.article.jvmstack;
 
+import sun.management.VMManagement;
+
 import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
 
@@ -26,8 +31,14 @@ public class MemoryFiller {
         IntStream.rangeClosed(1, threadCount).forEachOrdered(threadNr -> new Thread(() -> {
             // Allocate heap memory
              byte[] heapArr = new byte[heapPerThread * 1024];
-             // Allocate stack memory
-             fillStack(frameCount);
+            try {
+                // Allocate stack memory
+                fillStack(frameCount);
+            } catch (StackOverflowError e) {
+                // Stop on error, avoid endless log
+                System.err.println(e);
+                System.exit(1);
+            }
              System.out.print("\r" + threadNr + " threads created");
              // Block thread for measuring
              try {
@@ -37,7 +48,7 @@ public class MemoryFiller {
              }
         }).start());
 
-        System.out.println("\nPID: " + ManagementFactory.getRuntimeMXBean().getPid());
+        System.out.println("\nPID: " + getCurrentPid());
     }
 
 
@@ -49,13 +60,29 @@ public class MemoryFiller {
     private void fillStack(int frameCount) {
         // Unused primitives defined to consume stack on each frame,
         // since "frames may be heap allocated" : https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html#jvms-2.5.2
-        var p1 = 1L;
-        var p2 = 1L;
+        long p1 = 1L;
+        long p2 = 1L;
         if (frameCount > 0) {
             fillStack(frameCount - 1);
         }
     }
 
+    /**
+     * Get process id using reflection, compatible with Java 8
+     */
+    private int getCurrentPid() {
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        try {
+            Field jvmField = runtimeMXBean.getClass().getDeclaredField("jvm");
+            jvmField.setAccessible(true);
+            VMManagement vmManagement = (VMManagement) jvmField.get(runtimeMXBean);
+            Method getProcessIdMethod = vmManagement.getClass().getDeclaredMethod("getProcessId");
+            getProcessIdMethod.setAccessible(true);
+            return (int) getProcessIdMethod.invoke(vmManagement);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void main(String[] args) {
         if(args.length != 3) {
