@@ -6,9 +6,8 @@ import java.util.stream.IntStream;
 
 
 /**
- * Allocates stack and heap memory by given parameters for observing JVM behavior under different configurations
- *
- * Related to <a href="https://berksoftware.com/2023/12/JVM-Stack-Memory">this blog post.</a>
+ * Allocates stack and heap memory for analyzing JVM memory allocation with different configurations
+ * Related to <a href="https://berksoftware.com/23/12/JVM-Stack-Memory">this blog post.</a>
  */
 public class MemoryFiller {
 
