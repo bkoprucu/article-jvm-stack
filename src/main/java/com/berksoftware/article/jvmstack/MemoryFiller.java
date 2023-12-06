@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 /**
  * Allocates stack and heap memory by given parameters for observing JVM behavior under different configurations
  *
- *
+ * Related to <a href="https://berksoftware.com/2023/12/JVM-Stack-Memory">this blog post.</a>
  */
 public class MemoryFiller {
 
@@ -22,7 +22,8 @@ public class MemoryFiller {
      * @param frameCount    How many stack frames to use per thread
      */
     public void spawnThreads(int threadCount, int heapPerThread, int frameCount) {
-        System.out.println("\nSpawning " + threadCount + " threads, each consuming ~" + heapPerThread + " KB heap, "
+        System.out.println("\nSpawning " + threadCount + " threads, each consuming ~"
+                                   + heapPerThread + " KB heap, "
                                    + frameCount + " stack frames\n");
         IntStream.rangeClosed(1, threadCount).forEachOrdered(threadNr -> new Thread(() -> {
             // Allocate heap memory
@@ -49,12 +50,9 @@ public class MemoryFiller {
     }
 
 
-    /**
-     * Fills stack by recursively calling itself
-     */
     private void fillStack(int frameCount) {
-        // Unused primitives defined to consume stack on each frame,
-        // since "frames may be heap allocated" : https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html#jvms-2.5.2
+        // Unused primitives defined to consume stack on each frame, since
+        // "Frames may be heap allocated": https://docs.oracle.com/javase/specs/jvms/se21/html/jvms-2.html#jvms-2.5.2
         var p1 = 1L;
         var p2 = 1L;
         if (frameCount > 0) {
@@ -68,8 +66,9 @@ public class MemoryFiller {
             System.err.println("Usage: memoryfiller thread_count heap_per_thread stack_frame_per_thread");
             System.exit(1);
         }
-        new MemoryFiller().spawnThreads(Integer.parseInt(args[0]),  // Thread count
-                                        Integer.parseInt(args[1]),  // Heap per thread
-                                        Integer.parseInt(args[2])); // Stack frames per thread
+        new MemoryFiller().spawnThreads(
+                Integer.parseInt(args[0]),  // Thread count
+                Integer.parseInt(args[1]),  // Heap per thread
+                Integer.parseInt(args[2])); // Stack frames per thread
     }
 }
