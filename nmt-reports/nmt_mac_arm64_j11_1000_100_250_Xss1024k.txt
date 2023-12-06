@@ -1,0 +1,72 @@
+6203:
+
+Native Memory Tracking:
+
+Total: reserved=3877924KB, committed=1693700KB
+-                 Java Heap (reserved=1572864KB, committed=524288KB)
+                            (mmap: reserved=1572864KB, committed=524288KB) 
+ 
+-                     Class (reserved=1057138KB, committed=7410KB)
+                            (classes #1207)
+                            (  instance classes #1102, array classes #105)
+                            (malloc=370KB #3641) 
+                            (mmap: reserved=1056768KB, committed=7040KB) 
+                            (  Metadata:   )
+                            (    reserved=8192KB, committed=6144KB)
+                            (    used=5896KB)
+                            (    free=248KB)
+                            (    waste=0KB =0.00%)
+                            (  Class space:)
+                            (    reserved=1048576KB, committed=896KB)
+                            (    used=724KB)
+                            (    free=172KB)
+                            (    waste=0KB =0.00%)
+ 
+-                    Thread (reserved=1078929KB, committed=1078929KB)
+                            (thread #1022)
+                            (stack: reserved=1074152KB, committed=1074152KB)
+                            (malloc=3580KB #6134) 
+                            (arena=1198KB #2044)
+ 
+-                      Code (reserved=49570KB, committed=2562KB)
+                            (malloc=34KB #370) 
+                            (mmap: reserved=49536KB, committed=2528KB) 
+ 
+-                        GC (reserved=111927KB, committed=73015KB)
+                            (malloc=20391KB #4030) 
+                            (mmap: reserved=91536KB, committed=52624KB) 
+ 
+-                  Compiler (reserved=1KB, committed=1KB)
+                            (malloc=1KB #20) 
+ 
+-                  Internal (reserved=3604KB, committed=3604KB)
+                            (malloc=3572KB #9662) 
+                            (mmap: reserved=32KB, committed=32KB) 
+ 
+-                    Symbol (reserved=2465KB, committed=2465KB)
+                            (malloc=1402KB #3233) 
+                            (arena=1063KB #1)
+ 
+-    Native Memory Tracking (reserved=650KB, committed=650KB)
+                            (malloc=98KB #1051) 
+                            (tracking overhead=552KB)
+ 
+-               Arena Chunk (reserved=192KB, committed=192KB)
+                            (malloc=192KB) 
+ 
+-                   Logging (reserved=4KB, committed=4KB)
+                            (malloc=4KB #179) 
+ 
+-                 Arguments (reserved=18KB, committed=18KB)
+                            (malloc=18KB #481) 
+ 
+-                    Module (reserved=59KB, committed=59KB)
+                            (malloc=59KB #1046) 
+ 
+-              Synchronizer (reserved=470KB, committed=470KB)
+                            (malloc=470KB #3415) 
+ 
+-                 Safepoint (reserved=32KB, committed=32KB)
+                            (mmap: reserved=32KB, committed=32KB) 
+ 
+373184
